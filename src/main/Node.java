@@ -6,7 +6,7 @@ import igeo.IVec;
 
 public class Node {
 	// Attributes for Node
-	private int id;
+	private String id;
 	private ArrayList<Edge> neighborEdges = new ArrayList<Edge>();
 	private IVec position;
 
@@ -15,21 +15,21 @@ public class Node {
 	public Node spfa_Next;
 
 	// Method for Node
-	public Node(int id) {
+	public Node(String id) {
 		this.id = id;
 	}
 
-	public Node(int id, double x, double y, double z) {
+	public Node(String id, double x, double y, double z) {
 		this(id);
 		this.position = new IVec(x, y, z);
 	}
 
-	public Node(int id, IVec pos) {
+	public Node(String id, IVec pos) {
 		this(id);
 		this.position = pos;
 	}
 
-	public int id() {
+	public String id() {
 		return id;
 	}
 
@@ -55,6 +55,10 @@ public class Node {
 
 	public ArrayList<Edge> neighborEdges() {
 		return this.neighborEdges;
+	}
+	
+	public String toString() {
+		return this.id()+" "+this.pos().toString();
 	}
 
 }
