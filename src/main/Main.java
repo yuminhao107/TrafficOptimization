@@ -19,6 +19,14 @@ public class Main extends PApplet {
 	Field field;
 
 	public void setup() {
+		this.inputData(dataPath);
+		this.mergePoints(mergeMaxDist);
+		field=new Field();
+		field.buildField(sources, ends,weights);
+		for (Node node:field.getNodes()) {
+			System.out.println(node);
+		}
+		System.out.println("build field done.");
 
 
 	}
