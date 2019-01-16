@@ -49,6 +49,10 @@ public class Main extends PApplet {
 
 	}
 	
+	public void oneStep(Node[] sources, Node[] ends) {
+		
+	}
+	
 	private void inputData(String filePath) {
 		System.out.println("Open file: " + filePath);
 		String lines[] = loadStrings(filePath);

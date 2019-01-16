@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class Path {
 	private ArrayList<Node> nodes;
+	int id;
 	
-	public Path() {
+	public Path(int id) {
 		nodes=new ArrayList<Node>();
+		this.id = id;
 	}
 	
 	public void add(Node node) {
@@ -36,7 +38,7 @@ public class Path {
 	}
 	
 	public Path copy() {
-		Path path=new Path();
+		Path path=new Path(this.id);
 		for (int i=0;i<nodes.size()-1;i++) {
 			path.add(nodes.get(i));
 		}

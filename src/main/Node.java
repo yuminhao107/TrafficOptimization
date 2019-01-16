@@ -18,6 +18,10 @@ public class Node {
 	
 	// Attributes for buildField
 	public double shadow=0d;
+	
+	// Attributes for optimize
+	public double resistence=0d;
+	public ArrayList<Path> onPaths;
 
 	// Method for Node
 	public Node(String id) {
@@ -57,7 +61,8 @@ public class Node {
 			if (edge.end().equals(node))
 				return;
 		}
-		neighborEdges.add(new Edge(this, node, this.pos().dist(node.pos())));
+		double weight=Constant.dist2Resistence(this.pos().dist(node.pos()));
+		neighborEdges.add(new Edge(this, node, weight));
 	}
 	
 	public void delNeighbor(Node node) {

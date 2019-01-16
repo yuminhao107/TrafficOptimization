@@ -200,7 +200,7 @@ public class Field {
 	 * @return a list contains all the shortest path from source to end.
 	 * source and end should not be null and should be different.
 	 */
-	public ArrayList<Path> findAllShortestPath(Node source, Node end) {
+	public ArrayList<Path> findAllShortestPath(Node source, Node end,int id) {
 		SPFA2(source);
 		ArrayList<Path> paths=new ArrayList<Path>();
 		for (Node node:nodes) {
@@ -210,7 +210,7 @@ public class Field {
 		}
 		Stack<Path> stack=new Stack<Path>();
 		for (Node node:end.spfa_Next_List) {
-			Path path=new Path();
+			Path path=new Path(id);
 			path.add(end);
 			path.add(node);
 			stack.push(path);
