@@ -1,5 +1,5 @@
 package main;
 
 public class Constant {
-	public static double tolerance=0.000001;
+	public static double tolerance=0.001;
 }

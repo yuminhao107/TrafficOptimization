@@ -14,6 +14,7 @@ public class Node {
 	// Attributes for spfa
 	public double spfa_Dist;
 	public Node spfa_Next;
+	public ArrayList<Node> spfa_Next_List;
 	
 	// Attributes for buildField
 	public double shadow=0d;
@@ -50,6 +51,8 @@ public class Node {
 	}
 
 	public void addNeighbor(Node node) {
+		if (node.equals(this))
+			return;
 		for (Edge edge:this.neighborEdges) {
 			if (edge.end().equals(node))
 				return;
@@ -87,7 +90,18 @@ public class Node {
 		for (String str:alias) {
 			name+="-"+str;
 		}
-		return name+" "+this.pos().toString();
+		String text=name+" "+this.pos();
+//		text+="-"+this.neighborEdges.size()+" out edges-";
+		return text;
+	}
+	
+	public String s_Spfa_Next_List() {
+		String text=String.format("The spfa_next_list for %s is ", this);
+		text+=this.spfa_Next_List.size();
+//		for (Node node:this.spfa_Next_List) {
+//			text+=node+" ";
+//		}
+		return text;
 	}
 	
 	public double dist(Node node) {

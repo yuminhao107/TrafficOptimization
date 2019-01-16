@@ -27,6 +27,20 @@ public class Main extends PApplet {
 			System.out.println(node);
 		}
 		System.out.println("build field done.");
+		
+		
+		
+//		System.out.println(String.format("spfa done. %s nodes between %s and %s ",
+//				field.findShortestPath(sources[0], ends[0]).size(),
+//				sources[0], 
+//				ends[0]
+//				));
+//		System.out.println(String.format("spfa done. found %s paths between %s and %s ",
+//				field.findAllShortestPath(sources[0], ends[0]).size(),
+//				sources[0], 
+//				ends[0]
+//				));
+//		System.out.println(ends[0].s_Spfa_Next_List());
 
 
 	}

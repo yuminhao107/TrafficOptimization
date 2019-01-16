@@ -134,14 +134,23 @@ public class Field {
 	}
 
 
-	private ArrayList<Node> findShortestPath(Node source, Node end) {
+	public ArrayList<Node> findShortestPath(Node source, Node end) {
 		SPFA(source);
+		if (end.spfa_Next==null) {
+			return null;
+		}
 		ArrayList<Node> path = new ArrayList<Node>();
 		Node pos = end;
 		path.add(pos);
-		while (pos != source) {
+		while (!pos.equals(source)) {
 			pos = pos.spfa_Next;
 			path.add(pos);
+		}
+		//reverse the path
+		for(int i=0;i<path.size()/2-1;i++) {
+			Node tem=path.get(i);
+			path.set(i, path.get(path.size()-1-i));
+			path.set(path.size()-1-i, tem);
 		}
 		return path;
 	}
@@ -163,6 +172,86 @@ public class Field {
 					edge.end().spfa_Dist = dist;
 					que.add(edge.end());
 					edge.end().spfa_Next = node;
+				}
+			}
+		}
+	}
+	
+	private ArrayList<Node> dedupe(ArrayList<Node> list){
+		ArrayList<Node> newList=new ArrayList<Node>();
+		for (Node iNode:list) {
+			boolean found=false;
+			for (Node jNode:newList) {
+				if (iNode.equals(jNode)) {
+					found=true;
+					break;
+				}
+			}
+			if (!found)
+				newList.add(iNode);
+		}
+		return newList;
+	}
+	
+	
+	/**
+	 * @param source
+	 * @param end
+	 * @return a list contains all the shortest path from source to end.
+	 * source and end should not be null and should be different.
+	 */
+	public ArrayList<Path> findAllShortestPath(Node source, Node end) {
+		SPFA2(source);
+		ArrayList<Path> paths=new ArrayList<Path>();
+		for (Node node:nodes) {
+//			System.out.print(node.spfa_Next_List.size());
+			node.spfa_Next_List=this.dedupe(node.spfa_Next_List);
+//			System.out.println(" "+node.spfa_Next_List.size());
+		}
+		Stack<Path> stack=new Stack<Path>();
+		for (Node node:end.spfa_Next_List) {
+			Path path=new Path();
+			path.add(end);
+			path.add(node);
+			stack.push(path);
+		}
+		while (!stack.isEmpty()) {
+			Path path=stack.pop();
+			for (Node node:path.end().spfa_Next_List) {
+				Path newPath=path.copy();
+				newPath.add(node);
+				if (node.equals(source)) {
+					paths.add(newPath);
+				}else {
+					stack.push(newPath);
+				}
+			}
+		}
+		return paths;
+	}
+	
+	private void SPFA2(Node source) {
+		for (Node node : nodes) {
+			node.spfa_Dist = Double.MAX_VALUE;
+			node.spfa_Next_List = new ArrayList<Node>();
+		}
+
+		Queue<Node> que = new LinkedList<Node>();
+		source.spfa_Dist = 0;
+		que.offer(source);
+		while (!que.isEmpty()) {
+			Node node = que.poll();
+			for (Edge edge : node.neighborEdges()) {
+				Node end=edge.end();
+				double dist = edge.weight() + node.spfa_Dist;
+				if (Math.abs(dist-end.spfa_Dist)<Constant.tolerance) {
+					end.spfa_Next_List.add(node);
+				}
+				else if (dist < end.spfa_Dist) {
+					end.spfa_Dist = dist;
+					que.add(end);
+					end.spfa_Next_List = new ArrayList<Node>();
+					end.spfa_Next_List.add(node);
 				}
 			}
 		}
