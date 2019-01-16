@@ -4,15 +4,23 @@ import java.util.ArrayList;
 
 public class Path {
 	private ArrayList<Node> nodes;
-	int id;
 	
-	public Path(int id) {
+	// for optimize
+	public int id;
+	public double weight;
+	public boolean isDisplay;
+	
+	// method for path
+	public Path() {
 		nodes=new ArrayList<Node>();
-		this.id = id;
 	}
 	
 	public void add(Node node) {
 		nodes.add(node);
+	}
+	
+	public ArrayList<Node> nodes(){
+		return this.nodes;
 	}
 	
 	public Node source() {
@@ -37,9 +45,25 @@ public class Path {
 		}
 	}
 	
-	public Path copy() {
-		Path path=new Path(this.id);
+	public Node pre(Node node) {
+		for (int i=1;i<nodes.size();i++) {
+			if (nodes.get(i).equals(node))
+				return nodes.get(i-1);
+		}
+		return null;
+	}
+	
+	public Node next(Node node) {
 		for (int i=0;i<nodes.size()-1;i++) {
+			if (nodes.get(i).equals(node))
+				return nodes.get(i+1);
+		}
+		return null;
+	}
+	
+	public Path copy() {
+		Path path=new Path();
+		for (int i=0;i<nodes.size();i++) {
 			path.add(nodes.get(i));
 		}
 		return path;

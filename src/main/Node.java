@@ -19,6 +19,9 @@ public class Node {
 	// Attributes for buildField
 	public double shadow=0d;
 	
+	// Attributes for conflict detect
+	public int order;
+	
 	// Attributes for optimize
 	public double resistence=0d;
 	public ArrayList<Path> onPaths;
