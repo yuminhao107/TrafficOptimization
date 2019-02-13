@@ -22,11 +22,12 @@ public class Main extends PApplet {
 	// vars for display
 	int[][] displayPaths= {
 			//put path to log here
-//			{1,2}
+			{ 0, 1 }
 			};
 	boolean[][] isDisplay=null;
 
 	public void setup() {
+		size(800, 600, IG.GL);
 		this.inputData(dataPath);
 		this.mergePoints(mergeMaxDist);
 		field=new Field();
@@ -36,8 +37,6 @@ public class Main extends PApplet {
 		}
 		System.out.println("build field done.");
 		iniDisplay();
-		for (int i=0;i<10;i++)
-			oneStep(sources,ends);
 
 		
 //		System.out.println(String.format("spfa done. %s nodes between %s and %s ",
@@ -53,17 +52,27 @@ public class Main extends PApplet {
 //		System.out.println(ends[0].s_Spfa_Next_List());
 
 		System.out.println("This is end of setup().");
+		oneStep(sources, ends);
 	}
 
 	public void draw() {
 
 	}
 	
+	public void keyPressed() {
+		if (this.key == 'n') {
+			oneStep(sources, ends);
+		}
+	}
+
 	public void oneStep(Node[] sources, Node[] ends) {
 		ArrayList<Path> paths=findAllPath4OneStep(sources, ends);
 		System.out.println("All paths founded: "+paths.size());
 		
 		updateNodeResistence(paths);
+
+		visualize(paths);
+		// count crossing point
 		int count=0;
 		for (Node node:field.getNodes()) {
 			if (node.resistence==Constant.crossResistence)count++;
@@ -71,6 +80,20 @@ public class Main extends PApplet {
 		System.out.println(String.format("%s of %s nodes are crossed.", count,field.getNodes().size()));
 	}
 	
+	public void visualize(ArrayList<Path> paths) {
+		IG.clear();
+		for (Path path : paths) {
+			if (!path.isDisplay)
+				continue;
+			IVec[] points = new IVec[path.numOfPoints()];
+			for (int i = 0; i < points.length; i++) {
+				points[i] = path.nodes().get(i).pos();
+			}
+			ICurve curve = new ICurve(points);
+
+		}
+	}
+
 	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends){
 		ArrayList<Path> allPaths=new ArrayList<Path>();
 		for(int i=0;i<sources.length;i++) 
@@ -93,7 +116,7 @@ public class Main extends PApplet {
 			node.onPaths=new ArrayList<Path>();
 		}
 		for (Path path:paths) {
-//			System.out.println(" path length£» "+path.nodes().size());
+//			System.out.println(" path lengthï¿½ï¿½ "+path.nodes().size());
 			for (int i=1;i<path.nodes().size()-1;i++) {
 				path.nodes().get(i).onPaths.add(path);
 			}

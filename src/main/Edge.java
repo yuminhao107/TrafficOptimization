@@ -2,7 +2,11 @@ package main;
 
 public class Edge {
 	private Node source, end;
+	// for spfa
 	private double weight;
+
+	// for optimize
+	public double flow = 0d;
 
 	public Edge(Node source, Node end) {
 		this.source = source;

@@ -76,4 +76,8 @@ public class Path {
 				this.end()
 				);
 	}
+
+	public int numOfPoints() {
+		return nodes.size();
+	}
 }
