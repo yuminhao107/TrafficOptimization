@@ -9,12 +9,9 @@ import processing.core.PApplet;
 public class Main extends PApplet {
 	
 	// vars for input
-	String dataPath = "finalData.txt";
+	String dataPath = "../data/finalData.txt";
 	Node[] sources, ends;
 	double[][] weights;
-	
-	//
-	double mergeMaxDist=1;
 	
 	//
 	Field field;
@@ -22,14 +19,16 @@ public class Main extends PApplet {
 	// vars for display
 	int[][] displayPaths= {
 			//put path to log here
-			{ 0, 1 }
+			{ 0, 2 }
 			};
 	boolean[][] isDisplay=null;
+	int[][] pathCount=null;
+	int stepCount=0;
 
 	public void setup() {
 		size(800, 600, IG.GL);
 		this.inputData(dataPath);
-		this.mergePoints(mergeMaxDist);
+		this.mergePoints(Constant.mergeMaxDist);
 		field=new Field();
 		field.buildField(sources, ends,weights);
 		for (Node node:field.getNodes()) {
@@ -52,7 +51,8 @@ public class Main extends PApplet {
 //		System.out.println(ends[0].s_Spfa_Next_List());
 
 		System.out.println("This is end of setup().");
-		oneStep(sources, ends);
+//		oneStep(sources, ends);
+		showField();
 	}
 
 	public void draw() {
@@ -66,22 +66,61 @@ public class Main extends PApplet {
 	}
 
 	public void oneStep(Node[] sources, Node[] ends) {
+		System.out.println();
+		System.out.println(String.format("------step %s------", ++stepCount));
+		
 		ArrayList<Path> paths=findAllPath4OneStep(sources, ends);
 		System.out.println("All paths founded: "+paths.size());
 		
 		updateNodeResistence(paths);
 
 		visualize(paths);
+		
 		// count crossing point
+		printCrossingPointNumber();
+		
+		// show number of paths focused
+		printPathNumber();
+		
+	}
+	
+	private void showField() {
+		showPoints();
+		for (Edge edge:field.getEdges()) {
+			new ICurve(edge.source().pos(),edge.end().pos());
+		}
+	}
+	
+	private void showPoints() {
+		for (Node node:field.getNodes()) {
+			ISphere sphere=new ISphere(node.pos(),Constant.pointRadius);
+			if (node.hasId()) {
+				sphere.clr(1d,0d,0d);
+			}
+		}
+	}
+	
+	private void printCrossingPointNumber() {
 		int count=0;
 		for (Node node:field.getNodes()) {
-			if (node.resistence==Constant.crossResistence)count++;
+			if (node.resistence==Constant.crossResistance)count++;
 		}
 		System.out.println(String.format("%s of %s nodes are crossed.", count,field.getNodes().size()));
 	}
 	
+	private void printPathNumber() {
+		for(int i=0;i<sources.length;i++) 
+			for (int j=0;j<ends.length;j++){
+				if (isDisplay[i][j]) {
+					String msg=String.format("%s paths between %s and %s.",pathCount[i][j],sources[i],ends[j]);
+					System.out.println(msg);
+				}
+			}
+	}
+	
 	public void visualize(ArrayList<Path> paths) {
 		IG.clear();
+		showPoints();
 		for (Path path : paths) {
 			if (!path.isDisplay)
 				continue;
@@ -96,6 +135,7 @@ public class Main extends PApplet {
 
 	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends){
 		ArrayList<Path> allPaths=new ArrayList<Path>();
+		pathCount=new int[sources.length][ends.length];
 		for(int i=0;i<sources.length;i++) 
 			for (int j=0;j<ends.length;j++){
 				if (weights[i][j]==0)
@@ -106,6 +146,7 @@ public class Main extends PApplet {
 					if (isDisplay[i][j])
 						path.isDisplay=true;
 					allPaths.add(path);
+					pathCount[i][j]=paths.size();
 			}
 		}
 		return allPaths;
@@ -155,9 +196,9 @@ public class Main extends PApplet {
 	public double resistence(int max,int a1,int a2,int b1,int b2) {
 		if (a1==b1 && a2==b2) return 0d;
 		if (a1 == b1)
-			return Constant.divideResistence;
+			return Constant.divideResistance;
 		if (a2==b2)
-			return Constant.mergeResistence;
+			return Constant.mergeResistance;
 		if (a1==-1) return 0d;
 		if (a2==-1) return 0d;
 		if (b1==-1) return 0d;
@@ -167,9 +208,9 @@ public class Main extends PApplet {
 		b2=(b2-a1+max)%max;
 		a1=0;
 		if (b1<a2 && (a2<b2 || b2==a1))
-			return Constant.crossResistence;
+			return Constant.crossResistance;
 		if (b1>=a2 && a1<b2 && b2<a2 )
-			return Constant.crossResistence;
+			return Constant.crossResistance;
 		return 0d;
 	}
 	

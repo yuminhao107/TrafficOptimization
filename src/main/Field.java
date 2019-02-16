@@ -29,6 +29,10 @@ public class Field {
 		return nodes;
 	}
 	
+	public ArrayList<Edge> getEdges() {
+		return edges;
+	} 
+	
 	public void buildField(Node[] sources,Node[] ends,double[][] weights) {
 		for (int i=0;i<sources.length;i++) {
 			sources[i]=addNode(sources[i]);
@@ -39,6 +43,7 @@ public class Field {
 		
 		Stack<Edge> stack=new Stack<Edge>();
 		
+		// push 12 edges of each box into the stack
 		for (int i=0;i<sources.length;i++) {
 			for (int j=0;j<ends.length;j++) {
 				if (weights[i][j]>0) {
@@ -77,6 +82,8 @@ public class Field {
 				}
 			}
 		}
+		
+		//merge duplicate edges in the stack
 		while (!stack.isEmpty()) {
 			Edge edge=stack.pop();
 			ArrayList<Node> nodesOnEdge=new ArrayList<Node>();
@@ -112,6 +119,11 @@ public class Field {
 			}
 			
 
+		}
+		
+		// add each edge to this.edges
+		for (Node node:nodes) {
+			edges.addAll(node.neighborEdges());
 		}
 	}
 	

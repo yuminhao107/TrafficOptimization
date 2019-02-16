@@ -67,9 +67,9 @@ public class TestIGeo extends PApplet {
 	
 	public double resistence(int max,int a1,int a2,int b1,int b2) {
 		if (a1 == b1)
-			return Constant.divideResistence;
+			return Constant.divideResistance;
 		if (a2==b2)
-			return Constant.mergeResistence;
+			return Constant.mergeResistance;
 		if (a1==-1) return 0d;
 		if (a2==-1) return 0d;
 		if (b1==-1) return 0d;
@@ -79,9 +79,9 @@ public class TestIGeo extends PApplet {
 		b2=(b2-a1+max)%max;
 		a1=0;
 		if (b1<a2 && (a2<b2 || b2==a1))
-			return Constant.crossResistence;
+			return Constant.crossResistance;
 		if (b1>=a2 && a1<b2 && b2<a2 )
-			return Constant.crossResistence;
+			return Constant.crossResistance;
 		return 0d;
 	}
 }
