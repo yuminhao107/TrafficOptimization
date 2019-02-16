@@ -4,7 +4,7 @@ public class Constant {
 	public static double tolerance=0.001;
 	
 	// max distance for merge points
-	static double mergeMaxDist=1;
+	static double mergeMaxDist=10;
 	
 	//different resistance value
 	public static double crossResistance=5d;
@@ -18,4 +18,7 @@ public class Constant {
 	//display settings
 	public static double pointRadius=0.5d;
 	
+	public static double weight2Radius(double weight) {
+		return weight/1000d;
+	}
 }

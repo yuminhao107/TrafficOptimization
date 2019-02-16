@@ -2,11 +2,15 @@ package main;
 
 public class Edge {
 	private Node source, end;
+	public Edge pair;
 	// for spfa
 	private double weight;
 
 	// for optimize
 	public double flow = 0d;
+	
+	// for display
+	public boolean showed;
 
 	public Edge(Node source, Node end) {
 		this.source = source;
@@ -41,5 +45,15 @@ public class Edge {
 
 	public double weight() {
 		return this.weight;
+	}
+	
+	public Edge findPair() {
+		for (Edge edge:end.neighborEdges()) {
+			if (edge.end().equals(source)) {
+				return edge;
+			}
+		}
+		System.out.println("Error. A edge has no pair edge.");
+		return null;
 	}
 }

@@ -126,9 +126,10 @@ public class Main extends PApplet {
 				continue;
 			IVec[] points = new IVec[path.numOfPoints()];
 			for (int i = 0; i < points.length; i++) {
-				points[i] = path.nodes().get(i).pos();
+				points[i] = path.nodes().get(i).pos().cp();
 			}
 			ICurve curve = new ICurve(points);
+			IG.pipe(curve, Constant.weight2Radius(path.weight));
 
 		}
 	}
@@ -140,7 +141,7 @@ public class Main extends PApplet {
 			for (int j=0;j<ends.length;j++){
 				if (weights[i][j]==0)
 					continue;
-				ArrayList<Path> paths=field.findAllShortestPath(sources[i], ends[j]);
+				ArrayList<Path> paths=field.findAllShortestPath(sources[i], ends[j],weights[i][j]);
 				for (Path path:paths) {
 					path.weight=weights[i][j]/paths.size();
 					if (isDisplay[i][j])

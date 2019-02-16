@@ -125,6 +125,10 @@ public class Field {
 		for (Node node:nodes) {
 			edges.addAll(node.neighborEdges());
 		}
+		// find pair edge
+		for (Edge edge:edges) {
+			edge.pair=edge.findPair();
+		}
 	}
 	
 	private void addDoubleEdge(Node node1,Node node2) {
@@ -212,7 +216,7 @@ public class Field {
 	 * @return a list contains all the shortest path from source to end.
 	 * source and end should not be null and should be different.
 	 */
-	public ArrayList<Path> findAllShortestPath(Node source, Node end) {
+	public ArrayList<Path> findAllShortestPath(Node source, Node end,double weight) {
 		SPFA2(source);
 		ArrayList<Path> paths=new ArrayList<Path>();
 		for (Node node:nodes) {
@@ -238,6 +242,9 @@ public class Field {
 					stack.push(newPath);
 				}
 			}
+		}
+		for (Path path:paths) {
+			path.weight=weight/paths.size();
 		}
 		return paths;
 	}
