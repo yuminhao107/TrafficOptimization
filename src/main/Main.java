@@ -19,7 +19,7 @@ public class Main extends PApplet {
 	// vars for display
 	int[][] displayPaths= {
 			//put path to log here
-			{ 0, 2 }
+//			{ 0, 2 }
 			};
 	boolean[][] isDisplay=null;
 	int[][] pathCount=null;
@@ -121,16 +121,34 @@ public class Main extends PApplet {
 	public void visualize(ArrayList<Path> paths) {
 		IG.clear();
 		showPoints();
+		for (Edge edge:field.getEdges()) {
+			edge.showed=false;
+			edge.flow=0d;
+		}
 		for (Path path : paths) {
 			if (!path.isDisplay)
 				continue;
-			IVec[] points = new IVec[path.numOfPoints()];
-			for (int i = 0; i < points.length; i++) {
-				points[i] = path.nodes().get(i).pos().cp();
+			for (int i = 0; i < path.nodes().size()-1; i++) {
+				path.nodes().get(i).findEdge(path.nodes().get(i+1)).flow+=path.weight;
 			}
-			ICurve curve = new ICurve(points);
-			IG.pipe(curve, Constant.weight2Radius(path.weight));
+			
+//			IVec[] points = new IVec[path.numOfPoints()];
+//			for (int i = 0; i < points.length; i++) {
+//				points[i] = path.nodes().get(i).pos().cp();
+//			}
+//			ICurve curve = new ICurve(points);
+//			IG.pipe(curve, Constant.weight2Radius(path.weight));
 
+
+		}
+		for (Edge edge:field.getEdges()) {
+			if (edge.showed) continue;
+			double flow=edge.flow+edge.pair.flow;
+			if (flow<Constant.tolerance) continue;
+			ICurve curve = new ICurve(edge.source().pos().cp(),edge.end().pos().cp());
+			IG.pipe(curve, Constant.weight2Radius(flow));
+			edge.showed=true;
+			edge.pair.showed=true;
 		}
 	}
 
@@ -238,10 +256,12 @@ public class Main extends PApplet {
 		if (displayPaths.length==0) {
 			for(int i=0;i<isDisplay.length;i++)
 				for (int j=0;j<isDisplay[0].length;j++)
+					if (weights[i][j]>Constant.tolerance)
 					isDisplay[i][j]=true;
-		}
-		for(int i=0;i<displayPaths.length;i++) {
-			isDisplay[displayPaths[i][0]][displayPaths[i][1]]=true;
+		}else {
+			for(int i=0;i<displayPaths.length;i++) {
+				isDisplay[displayPaths[i][0]][displayPaths[i][1]]=true;
+			}
 		}
 	}
 	

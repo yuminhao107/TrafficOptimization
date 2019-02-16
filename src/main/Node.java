@@ -56,6 +56,15 @@ public class Node {
 	public IVec pos() {
 		return this.position;
 	}
+	
+	public Edge findEdge(Node node) {
+		for (Edge edge:neighborEdges) {
+			if (edge.end().equals(node)) {
+				return edge;
+			}
+		}
+		return null;
+	}
 
 	public void addNeighbor(Node node) {
 		if (node.equals(this))
