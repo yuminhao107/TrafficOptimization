@@ -19,7 +19,7 @@ public class Main extends PApplet {
 	// vars for display
 	int[][] displayPaths= {
 			//put path to log here
-//			{ 0, 2 }
+			{ 0, 2 }
 			};
 	boolean[][] isDisplay=null;
 	int[][] pathCount=null;
@@ -33,22 +33,14 @@ public class Main extends PApplet {
 		field.buildField(sources, ends,weights);
 		for (Node node:field.getNodes()) {
 			System.out.println(node);
+//			for (Edge edge:node.neighborEdges()) {
+//				System.out.println(edge);
+//			}
 		}
-		System.out.println("build field done.");
-		iniDisplay();
 
-		
-//		System.out.println(String.format("spfa done. %s nodes between %s and %s ",
-//				field.findShortestPath(sources[0], ends[0]).size(),
-//				sources[0], 
-//				ends[0]
-//				));
-//		System.out.println(String.format("spfa done. found %s paths between %s and %s ",
-//				field.findAllShortestPath(sources[0], ends[0]).size(),
-//				sources[0], 
-//				ends[0]
-//				));
-//		System.out.println(ends[0].s_Spfa_Next_List());
+		System.out.println("build field done.");
+		System.out.println(String.format("%s nodes. %s edges.", field.getNodes().size(),field.getEdges().size()));
+		iniDisplay();
 
 		System.out.println("This is end of setup().");
 //		oneStep(sources, ends);
@@ -128,6 +120,7 @@ public class Main extends PApplet {
 		for (Path path : paths) {
 			if (!path.isDisplay)
 				continue;
+//			System.out.println(path);
 			for (int i = 0; i < path.nodes().size()-1; i++) {
 				path.nodes().get(i).findEdge(path.nodes().get(i+1)).flow+=path.weight;
 			}

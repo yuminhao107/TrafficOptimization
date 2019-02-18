@@ -56,4 +56,9 @@ public class Edge {
 		System.out.println("Error. A edge has no pair edge.");
 		return null;
 	}
+	
+	public String toString() {
+		String text=String.format("guid:%s - guid:%s", source.guid,end.guid);
+		return text;
+	}
 }

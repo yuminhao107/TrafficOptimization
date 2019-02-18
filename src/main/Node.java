@@ -10,6 +10,9 @@ public class Node {
 	private ArrayList<String> alias=new ArrayList<String>();
 	private ArrayList<Edge> neighborEdges = new ArrayList<Edge>();
 	private IVec position;
+	
+	private static int nextGuid=0;
+	public int guid;
 
 	// Attributes for spfa
 	public double spfa_Dist;
@@ -28,21 +31,26 @@ public class Node {
 
 	// Method for Node
 	public Node(String id) {
+		this.guid=++Node.nextGuid;
 		this.id = id;
 	}
 
 	public Node(String id, double x, double y, double z) {
+		this.guid=++Node.nextGuid;
 		this.id = id;
 		this.position = new IVec(x, y, z);
 	}
 
 	public Node(String id, IVec pos) {
+		this.guid=++Node.nextGuid;
 		this.id = id;
 		this.position = pos;
 	}
 	
 	public Node(IVec pos) {
+		this.guid=++Node.nextGuid;
 		this.position = pos;
+		
 	}
 
 	public String id() {
@@ -107,7 +115,7 @@ public class Node {
 		for (String str:alias) {
 			name+="-"+str;
 		}
-		String text=name+" "+this.pos();
+		String text=String.format("%s %s (guid:%s)", name,this.pos(),guid);
 //		text+="-"+this.neighborEdges.size()+" out edges-";
 		return text;
 	}

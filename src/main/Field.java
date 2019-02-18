@@ -86,6 +86,7 @@ public class Field {
 		//merge duplicate edges in the stack
 		while (!stack.isEmpty()) {
 			Edge edge=stack.pop();
+			if (edge.source().equals(edge.end())) continue;
 			ArrayList<Node> nodesOnEdge=new ArrayList<Node>();
 			for (Node node:nodes) {
 				if (node.equals(edge.source()))
@@ -100,11 +101,12 @@ public class Field {
 			if (nodesOnEdge.size()==0) {
 				addDoubleEdge(edge.source(),edge.end());
 			}else {
+//				System.out.println(nodesOnEdge.size());
 				Comparator<Node> c = new Comparator<Node>() {
 					@Override
 					public int compare(Node o1, Node o2) {
 						// TODO Auto-generated method stub
-						if(o1.shadow<o2.shadow)
+						if(o1.shadow>o2.shadow)
 							return 1;
 						else return -1;
 					}
@@ -237,6 +239,7 @@ public class Field {
 				Path newPath=path.copy();
 				newPath.add(node);
 				if (node.equals(source)) {
+					newPath.reverse();
 					paths.add(newPath);
 				}else {
 					stack.push(newPath);

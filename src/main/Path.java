@@ -38,7 +38,7 @@ public class Path {
 	}
 	
 	public void reverse() {
-		for(int i=0;i<nodes.size()/2-1;i++) {
+		for(int i=0;i<nodes.size()/2;i++) {
 			Node tem=nodes.get(i);
 			nodes.set(i, nodes.get(nodes.size()-1-i));
 			nodes.set(nodes.size()-1-i, tem);
@@ -70,10 +70,15 @@ public class Path {
 	}
 	
 	public String toString() {
+		String text="";
+		for (int i=0;i<nodes.size();i++) {
+			text+=nodes.get(i).guid+" ";
+		}
 		return String.format(
-				"path from %s to %s",
+				"path from %s to %s:%s",
 				this.source(),
-				this.end()
+				this.end(),
+				text
 				);
 	}
 
