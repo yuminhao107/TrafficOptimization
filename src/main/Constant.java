@@ -4,7 +4,10 @@ public class Constant {
 	public static double tolerance=0.001;
 	
 	// max distance for merge points
-	static double mergeMaxDist=0d;
+	public static double mergeMaxDist=0d;
+	
+	// max number of turns on a path
+	public static int maxNumOfTurns=50;
 	
 	//different resistance value
 	public static double crossResistance=5d;

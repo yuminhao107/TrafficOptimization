@@ -239,8 +239,10 @@ public class Field {
 				Path newPath=path.copy();
 				newPath.add(node);
 				if (node.equals(source)) {
-					newPath.reverse();
-					paths.add(newPath);
+					if (newPath.numOfTurns()<=Constant.maxNumOfTurns) {
+						newPath.reverse();
+						paths.add(newPath);
+					}
 				}else {
 					stack.push(newPath);
 				}

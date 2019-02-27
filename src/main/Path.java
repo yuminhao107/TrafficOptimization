@@ -2,6 +2,8 @@ package main;
 
 import java.util.ArrayList;
 
+import igeo.IVec;
+
 public class Path {
 	private ArrayList<Node> nodes;
 	
@@ -84,5 +86,17 @@ public class Path {
 
 	public int numOfPoints() {
 		return nodes.size();
+	}
+	
+	public int numOfTurns() {
+		int sum=0;
+		for (int i=0;i<nodes.size()-2;i++) {
+			IVec a=nodes.get(i).pos();
+			IVec b=nodes.get(i+1).pos();
+			IVec c=nodes.get(i+2).pos();
+			if (b.dif(a).cross(c.dif(a)).len()>Constant.tolerance)
+				++sum;
+		}
+		return sum;
 	}
 }

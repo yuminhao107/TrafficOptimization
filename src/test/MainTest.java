@@ -51,7 +51,44 @@ class MainTest {
 	void testHasId() {
 		Node a=new Node(new IVec(1d,2d,3d));
 		boolean result=a.hasId();
-		boolean expectedResult=true;
+		boolean expectedResult=false;
+		assertEquals(expectedResult,result);
+	}
+	
+	@Test 
+	void testNumOfTurns(){
+		Path path=new Path();
+		path.add(new Node("",0d,0d,10d));
+		path.add(new Node("",0d,0d,20d));
+		path.add(new Node("",0d,0d,30d));
+		path.add(new Node("",0d,0d,40d));
+		path.add(new Node("",0d,0d,50d));
+		int result=path.numOfTurns();
+		int expectedResult=0;
+		assertEquals(expectedResult,result);
+	}
+	
+	void testNumOfTurns2(){
+		Path path=new Path();
+		path.add(new Node("",0d,0d,0d));
+		path.add(new Node("",0d,10d,0d));
+		path.add(new Node("",0d,20d,0d));
+		path.add(new Node("",10d,20d,0d));
+		path.add(new Node("",20d,20d,0d));
+		int result=path.numOfTurns();
+		int expectedResult=1;
+		assertEquals(expectedResult,result);
+	}
+	
+	void testNumOfTurns3(){
+		Path path=new Path();
+		path.add(new Node("",0d,0d,0d));
+		path.add(new Node("",0d,10d,0d));
+		path.add(new Node("",10d,10d,0d));
+		path.add(new Node("",10d,20d,0d));
+		path.add(new Node("",20d,20d,0d));
+		int result=path.numOfTurns();
+		int expectedResult=3;
 		assertEquals(expectedResult,result);
 	}
 
