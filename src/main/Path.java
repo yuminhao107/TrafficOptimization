@@ -99,4 +99,31 @@ public class Path {
 		}
 		return sum;
 	}
+
+	public double cost() {
+		double sum = 0;
+		for (int i = 0; i < this.nodes.size() - 1; i++) {
+			Node now = this.nodes.get(i);
+			Node next = this.nodes.get(i + 1);
+			sum += now.findEdge(next).weight();
+			if (i < this.nodes.size() - 2) {
+				if (onSurface(next))
+				sum += next.resistence;
+			}
+		}
+		return sum * this.weight;
+	}
+
+	private boolean onSurface(Node node) {
+		Node pre = pre(node);
+		if (pre == null)
+			return false;
+		Node next = next(node);
+		if (next == null)
+			return false;
+		double z1 = pre.pos().z();
+		double z2 = node.pos().z();
+		double z3 = next.pos().z();
+		return (Math.abs(z1 - z2) < Constant.tolerance && Math.abs(z2 - z3) < Constant.tolerance);
+	}
 }

@@ -68,12 +68,22 @@ public class Main extends PApplet {
 
 		visualize(paths);
 		
+		// show number of paths focused
+		printPathNumber();
+
 		// count crossing point
 		printCrossingPointNumber();
 		
-		// show number of paths focused
-		printPathNumber();
-		
+		printTotalCost(paths);
+
+	}
+
+	private void printTotalCost(ArrayList<Path> paths) {
+		double sum = 0;
+		for (Path path : paths) {
+			sum += path.cost();
+		}
+		System.out.print("Total cost is " + sum);
 	}
 	
 	private void showField() {
@@ -93,11 +103,19 @@ public class Main extends PApplet {
 	}
 	
 	private void printCrossingPointNumber() {
-		int count=0;
+		int crossCount = 0;
+		int mergeCount = 0;
+		int divideCount = 0;
 		for (Node node:field.getNodes()) {
-			if (node.resistence==Constant.crossResistance)count++;
+			if (node.resistence == Constant.crossResistance)
+				crossCount++;
+			if (node.resistence == Constant.mergeResistance)
+				mergeCount++;
+			if (node.resistence == Constant.divideResistance)
+				divideCount++;
 		}
-		System.out.println(String.format("%s of %s nodes are crossed.", count,field.getNodes().size()));
+		System.out.println(String.format("%s nodes in total. %s crossed. %s merged. %s divided.",
+				field.getNodes().size(), crossCount, mergeCount, divideCount));
 	}
 	
 	private void printPathNumber() {
