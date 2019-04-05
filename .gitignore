@@ -1,6 +1,8 @@
 .metadata
 bin/
 tmp/
+data/
+src/main/Constant.java
 *.tmp
 *.bak
 *.swp
