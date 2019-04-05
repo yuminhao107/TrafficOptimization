@@ -19,7 +19,7 @@ public class Main extends PApplet {
 	// vars for display
 	int[][] displayPaths= {
 			//put path to log here
-			{ 0, 2 }
+//			{ 0, 2 }
 			};
 	boolean[][] isDisplay=null;
 	int[][] pathCount=null;
@@ -66,7 +66,11 @@ public class Main extends PApplet {
 		
 		updateNodeResistence(paths);
 
-		visualize(paths);
+//		visualize(paths);
+		IG.clear();
+		IG.layer("0");
+		showPoints();
+		visualizeWithLayer(paths, sources, ends, weights);
 		
 		// show number of paths focused
 		printPathNumber();
@@ -88,12 +92,14 @@ public class Main extends PApplet {
 	
 	private void showField() {
 		showPoints();
+		IG.layer("0-edges");
 		for (Edge edge:field.getEdges()) {
 			new ICurve(edge.source().pos(),edge.end().pos());
 		}
 	}
 	
 	private void showPoints() {
+		IG.layer("0-points");
 		for (Node node:field.getNodes()) {
 			ISphere sphere=new ISphere(node.pos(),Constant.pointRadius);
 			if (node.hasId()) {
@@ -129,8 +135,6 @@ public class Main extends PApplet {
 	}
 	
 	public void visualize(ArrayList<Path> paths) {
-		IG.clear();
-		showPoints();
 		for (Edge edge:field.getEdges()) {
 			edge.showed=false;
 			edge.flow=0d;
@@ -163,6 +167,42 @@ public class Main extends PApplet {
 		}
 	}
 
+	public void visualize(ArrayList<Path> paths, Node source, Node end) {
+		String layerName = source.id() + "-" + end.id();
+		for (Edge edge : field.getEdges()) {
+			edge.showed = false;
+			edge.flow = 0d;
+		}
+		for (Path path : paths) {
+			if ((!path.source().equals(source)) || (!path.end().equals(end)))
+				continue;
+			for (int i = 0; i < path.nodes().size() - 1; i++) {
+				path.nodes().get(i).findEdge(path.nodes().get(i + 1)).flow += path.weight;
+			}
+		}
+		for (Edge edge : field.getEdges()) {
+			if (edge.showed)
+				continue;
+			double flow = edge.flow + edge.pair.flow;
+			if (flow < Constant.tolerance)
+				continue;
+			ICurve curve = new ICurve(edge.source().pos().cp(), edge.end().pos().cp());
+			ISurface surface = IG.pipe(curve, Constant.weight2Radius(flow));
+			curve.del();
+			surface.layer(layerName);
+			edge.showed = true;
+			edge.pair.showed = true;
+		}
+	}
+
+	public void visualizeWithLayer(ArrayList<Path> paths, Node[] sources, Node[] ends, double[][] weights) {
+		for (int i = 0; i < sources.length; i++)
+			for (int j = 0; j < ends.length; j++) {
+				if (weights[i][j] > 0) {
+					visualize(paths, sources[i], ends[j]);
+				}
+			}
+	}
 	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends){
 		ArrayList<Path> allPaths=new ArrayList<Path>();
 		pathCount=new int[sources.length][ends.length];

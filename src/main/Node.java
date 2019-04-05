@@ -6,13 +6,16 @@ import igeo.IVec;
 
 public class Node {
 	// Attributes for Node
-	private String id=null;
+	private String name=null;
 	private ArrayList<String> alias=new ArrayList<String>();
 	private ArrayList<Edge> neighborEdges = new ArrayList<Edge>();
 	private IVec position;
 	
 	private static int nextGuid=0;
 	public int guid;
+
+	public int sourceId = -1;
+	public int endId = -1;
 
 	// Attributes for spfa
 	public double spfa_Dist;
@@ -32,18 +35,18 @@ public class Node {
 	// Method for Node
 	public Node(String id) {
 		this.guid=++Node.nextGuid;
-		this.id = id;
+		this.name = id;
 	}
 
 	public Node(String id, double x, double y, double z) {
 		this.guid=++Node.nextGuid;
-		this.id = id;
+		this.name = id;
 		this.position = new IVec(x, y, z);
 	}
 
 	public Node(String id, IVec pos) {
 		this.guid=++Node.nextGuid;
-		this.id = id;
+		this.name = id;
 		this.position = pos;
 	}
 	
@@ -54,11 +57,11 @@ public class Node {
 	}
 
 	public String id() {
-		return id;
+		return name;
 	}
 	
 	public boolean hasId() {
-		return this.id!=null;
+		return this.name!=null;
 	}
 
 	public IVec pos() {

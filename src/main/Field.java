@@ -36,9 +36,11 @@ public class Field {
 	public void buildField(Node[] sources,Node[] ends,double[][] weights) {
 		for (int i=0;i<sources.length;i++) {
 			sources[i]=addNode(sources[i]);
+			sources[i].sourceId = i;
 		}
 		for (int i=0;i<ends.length;i++) {
 			ends[i]=addNode(ends[i]);
+			ends[i].endId = i;
 		}
 		
 		Stack<Edge> stack=new Stack<Edge>();
