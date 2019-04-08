@@ -9,7 +9,7 @@ import processing.core.PApplet;
 public class Main extends PApplet {
 	
 	// vars for input
-	String dataPath = "../data/finalData.txt";
+	String dataPath = "../data/finalData2.txt";
 	Node[] sources, ends;
 	double[][] weights;
 	
@@ -24,6 +24,7 @@ public class Main extends PApplet {
 	boolean[][] isDisplay=null;
 	int[][] pathCount=null;
 	int stepCount=0;
+	int textSize = 6;
 
 	public void setup() {
 		size(800, 600, IG.GL);
@@ -53,27 +54,28 @@ public class Main extends PApplet {
 	
 	public void keyPressed() {
 		if (this.key == 'n') {
-			oneStep(sources, ends);
+			oneStep(sources, ends, weights);
 		}
 	}
 
-	public void oneStep(Node[] sources, Node[] ends) {
+	public void oneStep(Node[] sources, Node[] ends, double[][] weights) {
 		System.out.println();
 		System.out.println(String.format("------step %s------", ++stepCount));
 		
-		ArrayList<Path> paths=findAllPath4OneStep(sources, ends);
+		ArrayList<Path> paths = findAllPath4OneStep(sources, ends, weights);
 		System.out.println("All paths founded: "+paths.size());
 		
 		updateNodeResistence(paths);
 
-//		visualize(paths);
+
 		IG.clear();
 		IG.layer("0");
 		showPoints();
-		visualizeWithLayer(paths, sources, ends, weights);
+//		visualizeWithLayer(paths, sources, ends, weights);
+		visualize(paths);
 		
 		// show number of paths focused
-		printPathNumber();
+//		printPathNumber();
 
 		// count crossing point
 		printCrossingPointNumber();
@@ -104,6 +106,7 @@ public class Main extends PApplet {
 			ISphere sphere=new ISphere(node.pos(),Constant.pointRadius);
 			if (node.hasId()) {
 				sphere.clr(1d,0d,0d);
+				IText text = new IText(node.id(), textSize, node.pos());
 			}
 		}
 	}
@@ -140,8 +143,8 @@ public class Main extends PApplet {
 			edge.flow=0d;
 		}
 		for (Path path : paths) {
-			if (!path.isDisplay)
-				continue;
+//			if (!path.isDisplay)
+//				continue;
 //			System.out.println(path);
 			for (int i = 0; i < path.nodes().size()-1; i++) {
 				path.nodes().get(i).findEdge(path.nodes().get(i+1)).flow+=path.weight;
@@ -156,12 +159,14 @@ public class Main extends PApplet {
 
 
 		}
+		java.text.DecimalFormat df = new java.text.DecimalFormat("#.0");
 		for (Edge edge:field.getEdges()) {
 			if (edge.showed) continue;
 			double flow=edge.flow+edge.pair.flow;
 			if (flow<Constant.tolerance) continue;
 			ICurve curve = new ICurve(edge.source().pos().cp(),edge.end().pos().cp());
-			IG.pipe(curve, Constant.weight2Radius(flow));
+			ISurface surface = IG.pipe(curve, Constant.weight2Radius(flow)).layer("0-pipes");
+			new IText("" + df.format(flow), textSize, curve.mid()).layer("0-numbers");
 			edge.showed=true;
 			edge.pair.showed=true;
 		}
@@ -203,7 +208,8 @@ public class Main extends PApplet {
 				}
 			}
 	}
-	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends){
+
+	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends, double[][] weights) {
 		ArrayList<Path> allPaths=new ArrayList<Path>();
 		pathCount=new int[sources.length][ends.length];
 		for(int i=0;i<sources.length;i++) 
