@@ -374,7 +374,11 @@ public class Main extends PApplet {
 					if (re > max)
 						max = re;
 				}
-			node.resistence = Constant.updateResistence(node.resistence, max);
+			node.temResistence = max;
+			if (stepCount == 1)
+				node.resistence = max;
+			else
+				node.resistence = Constant.updateResistence(node.resistence, max);
 		}
 
 	}

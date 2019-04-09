@@ -7,7 +7,7 @@ public class Constant {
 	public static double lamda = 0.5d;
 
 	public static double updateResistence(double oldResistence, double delta) {
-		return oldResistence + delta;
+		return (1 - lamda) * oldResistence + lamda * delta;
 	}
 
 	// max distance for merge points

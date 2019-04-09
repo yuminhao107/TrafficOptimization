@@ -30,6 +30,7 @@ public class Node {
 	
 	// Attributes for optimize
 	public double resistence=0d;
+	public double temResistence = 0d;
 	public ArrayList<Path> onPaths;
 
 	// Method for Node

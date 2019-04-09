@@ -108,7 +108,7 @@ public class Path {
 			sum += now.findEdge(next).weight();
 			if (i < this.nodes.size() - 2) {
 				if (onSurface(next))
-				sum += next.resistence;
+					sum += next.temResistence;
 			}
 		}
 		return sum * this.weight;
