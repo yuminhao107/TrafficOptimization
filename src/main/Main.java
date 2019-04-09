@@ -13,6 +13,8 @@ public class Main extends PApplet {
 	Node[] sources, ends;
 	double[][] weights;
 	
+	ArrayList<Path> historypaths = new ArrayList<Path>();
+
 	//
 	Field field;
 	
@@ -25,6 +27,9 @@ public class Main extends PApplet {
 	int[][] pathCount=null;
 	int stepCount=0;
 	int textSize = 6;
+	int stepNum = 1000;
+
+	boolean notPressed = true;
 
 	public void setup() {
 		size(800, 600, IG.GL);
@@ -54,8 +59,37 @@ public class Main extends PApplet {
 	
 	public void keyPressed() {
 		if (this.key == 'n') {
-			oneStep(sources, ends, weights);
+			oneStep(sources, ends, weights, stepNum);
 		}
+		if (this.key == 'm' && notPressed) {
+//			notPressed = false;
+			autoStep(sources, ends, weights, stepNum);
+		}
+	}
+
+	public void autoStep(Node[] sources, Node[] ends, double[][] weights, int stepNum) {
+		ArrayList<Path> paths = new ArrayList<Path>();
+		for (int i = 0; i < stepNum; i++) {
+			System.out.println();
+			System.out.println(String.format("------step %s------", ++stepCount));
+
+			paths = findAllPath4OneStep(sources, ends, weights);
+			System.out.println("All paths founded: " + paths.size());
+
+			updateGobalNodeResistence(paths, field.getNodes());
+
+			// show number of paths focused
+//			printPathNumber();
+
+			// count crossing point
+			printCrossingPointNumber();
+
+			printTotalCost(paths);
+		}
+		IG.clear();
+		IG.layer("0");
+		showPoints();
+		visualize(paths);
 	}
 
 	public void oneStep(Node[] sources, Node[] ends, double[][] weights) {
@@ -80,6 +114,31 @@ public class Main extends PApplet {
 		// count crossing point
 		printCrossingPointNumber();
 		
+		printTotalCost(paths);
+
+	}
+
+	public void oneStep(Node[] sources, Node[] ends, double[][] weights, int stepNum) {
+		System.out.println();
+		System.out.println(String.format("------step %s------", ++stepCount));
+
+		ArrayList<Path> paths = findAllPath4OneStep(sources, ends, weights);
+		System.out.println("All paths founded: " + paths.size());
+
+		updateGobalNodeResistence(paths, field.getNodes());
+
+		IG.clear();
+		IG.layer("0");
+		showPoints();
+//		visualizeWithLayer(paths, sources, ends, weights);
+		visualize(paths);
+
+		// show number of paths focused
+//		printPathNumber();
+
+		// count crossing point
+		printCrossingPointNumber();
+
 		printTotalCost(paths);
 
 	}
@@ -210,6 +269,10 @@ public class Main extends PApplet {
 	}
 
 	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends, double[][] weights) {
+		return findAllPath4OneStep(sources, ends, weights, 1);
+	}
+
+	public ArrayList<Path> findAllPath4OneStep(Node[] sources, Node[] ends, double[][] weights, int stepNum) {
 		ArrayList<Path> allPaths=new ArrayList<Path>();
 		pathCount=new int[sources.length][ends.length];
 		for(int i=0;i<sources.length;i++) 
@@ -217,14 +280,21 @@ public class Main extends PApplet {
 				if (weights[i][j]==0)
 					continue;
 				ArrayList<Path> paths=field.findAllShortestPath(sources[i], ends[j],weights[i][j]);
-				for (Path path:paths) {
-					path.weight=weights[i][j]/paths.size();
+				for (Path path : paths) {
+					path.weight = weights[i][j] / stepNum / paths.size();
 					if (isDisplay[i][j])
-						path.isDisplay=true;
+						path.isDisplay = true;
 					allPaths.add(path);
-					pathCount[i][j]=paths.size();
+					pathCount[i][j] = paths.size();
+				}
+
+//				if (paths.size() > 0) {
+//					Path path = paths.get(0);
+//					path.weight = weights[i][j] / stepNum;
+//					allPaths.add(path);
+//					pathCount[i][j] = 1;
+//				}
 			}
-		}
 		return allPaths;
 	}
 	
@@ -269,6 +339,46 @@ public class Main extends PApplet {
 		
 	}
 	
+	public void updateGobalNodeResistence(ArrayList<Path> paths, ArrayList<Node> nodes) {
+		for (Node node : nodes) {
+			node.onPaths = new ArrayList<Path>();
+		}
+		for (Path path : paths) {
+//			System.out.println(" path length�� "+path.nodes().size());
+			for (int i = 1; i < path.nodes().size() - 1; i++) {
+				path.nodes().get(i).onPaths.add(path);
+			}
+		}
+		for (Node node : nodes) {
+			double max = 0;
+			ArrayList<Node> neighbours = new ArrayList<Node>();
+			// mark nodes from different height
+			for (Node n : node.neighbors()) {
+				if (Math.abs(n.pos().z() - node.pos().z()) > Constant.tolerance)
+					n.order = -1;
+				else
+					neighbours.add(n);
+			}
+			// sort for clockwise and mark the order
+			clockWiseSort(neighbours, node);
+			for (int i = 0; i < neighbours.size(); i++) {
+				neighbours.get(i).order = i;
+			}
+			for (Path iPath : node.onPaths)
+				for (Path jPath : node.onPaths) {
+					Node pi = iPath.pre(node);
+					Node ni = iPath.next(node);
+					Node pj = jPath.pre(node);
+					Node nj = jPath.next(node);
+					double re = resistence(neighbours.size() - 1, pi.order, ni.order, pj.order, nj.order);
+					if (re > max)
+						max = re;
+				}
+			node.resistence = Constant.updateResistence(node.resistence, max);
+		}
+
+	}
+
 	public double resistence(int max,int a1,int a2,int b1,int b2) {
 		if (a1==b1 && a2==b2) return 0d;
 		if (a1 == b1)

@@ -3,16 +3,23 @@ package main;
 public class Constant {
 	public static double tolerance=0.001;
 	
+	// gobal resistence update
+	public static double lamda = 0.5d;
+
+	public static double updateResistence(double oldResistence, double delta) {
+		return oldResistence + delta;
+	}
+
 	// max distance for merge points
-	public static double mergeMaxDist=0d;
+	public static double mergeMaxDist=28d;
 	
 	// max number of turns on a path
-	public static int maxNumOfTurns=50;
+	public static int maxNumOfTurns=5;
 	
 	//different resistance value
 	public static double crossResistance=5d;
 	public static double mergeResistance=4d;
-	public static double divideResistance=2.5d;
+	public static double divideResistance=2.6d;
 	
 	public static double dist2Resistence(double dist) {
 		return dist/1.3d;
@@ -22,6 +29,6 @@ public class Constant {
 	public static double pointRadius=0.5d;
 	
 	public static double weight2Radius(double weight) {
-		return Math.sqrt(weight)/200d;
+		return 10*Math.sqrt(weight)/200d;
 	}
 }
