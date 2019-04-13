@@ -28,11 +28,14 @@ public class Main extends PApplet {
 	int stepCount=0;
 	int textSize = 6;
 	int stepNum = 1000;
+	
+	int maxStep=1000;
+	int lamdaDivide=100;
 
 	boolean notPressed = true;
 
 	public void setup() {
-		size(800, 600, IG.GL);
+//		size(800, 600, IG.GL);
 		this.inputData(dataPath);
 		this.mergePoints(Constant.mergeMaxDist);
 		field=new Field();
@@ -49,8 +52,9 @@ public class Main extends PApplet {
 		iniDisplay();
 
 		System.out.println("This is end of setup().");
-//		oneStep(sources, ends);
-		showField();
+//		oneStep(sources, ends); m
+//		showField();
+		this.findLamda(sources, ends, weights, maxStep, lamdaDivide);
 	}
 
 	public void draw() {
@@ -65,6 +69,49 @@ public class Main extends PApplet {
 //			notPressed = false;
 			autoStep(sources, ends, weights, stepNum);
 		}
+	}
+	
+	public void findLamda(Node[] sources, Node[] ends, double[][] weights, int maxStep, int divide) {
+		System.out.println();
+		System.out.println("lamda, step, cost");
+		double min=Double.MAX_VALUE;
+		int minStep=-1;
+		double minLamda=-1;
+		for (int i=0;i<=divide;i++) {
+			Constant.lamda=1d*i/divide;
+			SData data=minCost(sources,ends,weights,maxStep);
+			System.out.println(String.format("%s, %s, %s",Constant.lamda,data.index,data.cost));
+			if (data.cost<min) {
+				min=data.cost;
+				minStep=data.index;
+				minLamda=Constant.lamda;
+			}
+		}
+		System.out.println("lamda, step, cost");
+		System.out.println(String.format("Min cost=%s appears, when lamda=%s,step=%s",min,minLamda,minStep));
+	}
+	
+	class SData{
+		double cost;
+		int index;
+	}
+	
+	public SData minCost(Node[] sources, Node[] ends, double[][] weights, int maxStep) {
+		double min=Double.MAX_VALUE;
+		int index=0;
+		for (int i = 0; i < stepNum; i++) {
+			ArrayList<Path> paths = findAllPath4OneStep(sources, ends, weights);
+			updateGobalNodeResistence(paths, field.getNodes());
+			double cost=printTotalCost(paths);
+			if (cost <min) {
+				min=cost;
+				index=i+1;
+			}
+		}
+		SData data=new SData();
+		data.index=index;
+		data.cost=min;
+		return data;
 	}
 
 	public void autoStep(Node[] sources, Node[] ends, double[][] weights, int stepNum) {
@@ -143,12 +190,13 @@ public class Main extends PApplet {
 
 	}
 
-	private void printTotalCost(ArrayList<Path> paths) {
+	private double printTotalCost(ArrayList<Path> paths) {
 		double sum = 0;
 		for (Path path : paths) {
 			sum += path.cost();
 		}
-		System.out.print("Total cost is " + sum);
+//		System.out.print("Total cost is " + sum);
+		return sum;
 	}
 	
 	private void showField() {
