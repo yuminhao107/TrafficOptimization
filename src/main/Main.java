@@ -101,7 +101,7 @@ public class Main extends PApplet {
 		int index=0;
 		for (int i = 0; i < stepNum; i++) {
 			ArrayList<Path> paths = findAllPath4OneStep(sources, ends, weights);
-			updateGobalNodeResistence(paths, field.getNodes());
+			updateGobalNodeResistence(paths, field.getNodes(),i+1);
 			double cost=printTotalCost(paths);
 			if (cost <min) {
 				min=cost;
@@ -123,7 +123,7 @@ public class Main extends PApplet {
 			paths = findAllPath4OneStep(sources, ends, weights);
 			System.out.println("All paths founded: " + paths.size());
 
-			updateGobalNodeResistence(paths, field.getNodes());
+			updateGobalNodeResistence(paths, field.getNodes(),stepCount);
 
 			// show number of paths focused
 //			printPathNumber();
@@ -172,7 +172,7 @@ public class Main extends PApplet {
 		ArrayList<Path> paths = findAllPath4OneStep(sources, ends, weights);
 		System.out.println("All paths founded: " + paths.size());
 
-		updateGobalNodeResistence(paths, field.getNodes());
+		updateGobalNodeResistence(paths, field.getNodes(),stepCount++);
 
 		IG.clear();
 		IG.layer("0");
@@ -387,7 +387,7 @@ public class Main extends PApplet {
 		
 	}
 	
-	public void updateGobalNodeResistence(ArrayList<Path> paths, ArrayList<Node> nodes) {
+	public void updateGobalNodeResistence(ArrayList<Path> paths, ArrayList<Node> nodes,int stepCount) {
 		for (Node node : nodes) {
 			node.onPaths = new ArrayList<Path>();
 		}
