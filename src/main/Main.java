@@ -27,7 +27,7 @@ public class Main extends PApplet {
 	int[][] pathCount=null;
 	int stepCount=0;
 	int textSize = 6;
-	int stepNum = 1000;
+	int stepNum = 207;
 
 	boolean notPressed = true;
 
