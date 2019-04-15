@@ -28,6 +28,9 @@ public class Main extends PApplet {
 	int stepCount=0;
 	int textSize = 6;
 	int stepNum = 207;
+	
+	double minCost=Double.MAX_VALUE;
+	int minIndex=-1;
 
 	boolean notPressed = true;
 
@@ -148,7 +151,12 @@ public class Main extends PApplet {
 		for (Path path : paths) {
 			sum += path.cost();
 		}
-		System.out.print("Total cost is " + sum);
+		System.out.println("Total cost is " + sum);
+		if (sum<minCost) {
+			minCost=sum;
+			minIndex=stepCount;
+		}
+		System.out.println(String.format("Min cost is %s at %s step.", minCost,minIndex));
 	}
 	
 	private void showField() {
