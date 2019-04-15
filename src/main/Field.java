@@ -304,5 +304,11 @@ public class Field {
 	private boolean isClockWise(IVec p1, IVec p2, IVec p3) {
 		return p2.dif(p1).cross(p3.dif(p1)).z() > 0d;
 	}
+	
+	public void setResistence2Zero() {
+		for (Node node:nodes) {
+			node.resistence=0d;
+		}
+	}
 
 }

@@ -97,6 +97,7 @@ public class Main extends PApplet {
 	}
 	
 	public SData minCost(Node[] sources, Node[] ends, double[][] weights, int maxStep) {
+		field.setResistence2Zero();
 		double min=Double.MAX_VALUE;
 		int index=0;
 		for (int i = 0; i < stepNum; i++) {
